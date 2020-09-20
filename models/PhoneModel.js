@@ -1,5 +1,9 @@
+require('dotenv').config();
+
+const environment = process.env.NODE_ENV || 'development'
+const config = require('./../knexfile')[environment]
+const knex = require('knex')(config)
 const { Model } = require('objection');
-const knex = require('./../connection');
 const UserModel = require('./UserModel');
 
 Model.knex(knex);

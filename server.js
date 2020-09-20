@@ -5,7 +5,9 @@ const fastify = require('fastify')({
 });
 
 fastify.register(require('fastify-formbody'));
-fastify.register(require('./routes'), { prefix: '/v1' });
+fastify.register(require('./routes'), {
+    prefix: '/v1'
+});
 
 const start = async () => {
     try {

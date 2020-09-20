@@ -52,9 +52,11 @@ async function update(request, reply) {
 }
 
 async function destroy(request, reply) {
+    let id = request.params.id;
+
     const users = await userModel
         .query()
-        .deleteById(request.body.id);
+        .deleteById(id);
 
     return res.ok(users, "Successfully delete users", reply)
 }
