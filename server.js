@@ -5,6 +5,10 @@ const fastify = require('fastify')({
 });
 
 fastify.register(require('fastify-formbody'));
+fastify.register(require('fastify-jwt'), {
+    secret: process.env.JWT_SECRET_TOKEN
+});
+fastify.register(require('./middleware/auth'));
 fastify.register(require('./routes'), {
     prefix: '/v1'
 });

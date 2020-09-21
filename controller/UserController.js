@@ -1,64 +1,86 @@
 const res = require('./ResponseController')
+const Boom = require('@hapi/boom')
+
 const userModel = require('./../models/UserModel')
 
 async function get(request, reply) {
-    const users = await userModel
-        .query()
-        .eager('phone')
-        .orderBy('name', 'ASC')
+    try {
+        const users = await userModel
+            .query()
+            .eager('phone')
+            .orderBy('name', 'ASC')
 
-    return res.ok(users, "", reply)
+        return res.ok(users, "", reply)
+    } catch (error) {
+        throw Boom.boomify(error)
+    }
 }
 
 async function store(request, reply) {
-    let name = request.body.name
-    let email = request.body.email
+    try {
+        let name = request.body.name
+        let email = request.body.email
 
-    const users = await userModel
-        .query()
-        .insert({
-            name: name,
-            email: email
-        });
+        const users = await userModel
+            .query()
+            .insert({
+                name: name,
+                email: email
+            });
 
-    return res.ok(users, "Successfully add userssss", reply)
+        return res.ok(users, "Successfully add userssss", reply)
+    } catch (error) {
+        throw Boom.boomify(error)
+    }
 }
 
 async function show(request, reply) {
-    let id = request.params.id
+    try {
+        let id = request.params.id
 
-    const users = await userModel
-        .query()
-        .eager('phone')
-        .findById(id)
+        const users = await userModel
+            .query()
+            .eager('phone')
+            .findById(id)
 
-    return res.ok(users, "", reply)
+        return res.ok(users, "", reply)
+    } catch (error) {
+        throw Boom.boomify(error)
+    }
 }
 
 async function update(request, reply) {
-    let name = request.body.name
-    let email = request.body.email
-    let id = request.body.id
+    try {
+        let name = request.body.name
+        let email = request.body.email
+        let id = request.body.id
 
-    const users = await userModel
-        .query()
-        .findById(id)
-        .patch({
-            name: name,
-            email: email
-        })
+        const users = await userModel
+            .query()
+            .findById(id)
+            .patch({
+                name: name,
+                email: email
+            })
 
-    return res.ok(users, "Successfully update users", reply)
+        return res.ok(users, "Successfully update users", reply)
+    } catch (error) {
+        throw Boom.boomify(error)
+    }
 }
 
 async function destroy(request, reply) {
-    let id = request.params.id
+    try {
+        let id = request.params.id
 
-    const users = await userModel
-        .query()
-        .deleteById(id)
+        const users = await userModel
+            .query()
+            .deleteById(id)
 
-    return res.ok(users, "Successfully delete users", reply)
+        return res.ok(users, "Successfully delete users", reply)
+    } catch (error) {
+        throw Boom.boomify(error)
+    }
 }
 
 module.exports = {
