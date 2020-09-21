@@ -3,7 +3,16 @@ let users = require('./controller/UserController');
 let phone = require('./controller/PhoneController');
 
 async function routes(fastify, options) {
-    fastify.post('/generateAccessToken', auth.generate);
+    fastify.post('/generateAccessToken', (request, reply) => {
+        const token = fastify.jwt.sign({ hello: 'world' }, { expiresIn: 86400 });
+        return reply.send({ token })
+    });
+
+    fastify.get('/routeValidation', {
+        preValidation: [fastify.jwtauth]
+    }, async (req, res) => {
+        res.status(200).send({ msg: "Successfully authenticated" });
+    });
 
     fastify.get('/users', users.get);
     fastify.get('/users/:id', users.show);

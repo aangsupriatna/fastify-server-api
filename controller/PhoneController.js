@@ -1,5 +1,5 @@
 const res = require('./ResponseController')
-const Boom = require('@hapi/boom')
+const boom = require('boom')
 
 const phoneModel = require('./../models/PhoneModel');
 
@@ -11,7 +11,7 @@ async function get(request, reply) {
 
         return res.ok(phone, "", reply)
     } catch (error) {
-        throw Boom.boomify(error)
+        throw boom.boomify(error)
     }
 }
 
@@ -31,7 +31,7 @@ async function store(request, reply) {
 
         return res.ok(phone, "Successfully add phone number", reply)
     } catch (error) {
-        throw Boom.boomify(error)
+        throw boom.boomify(error)
     }
 }
 
@@ -45,7 +45,7 @@ async function show(request, reply) {
 
         return res.ok(phone, "", reply)
     } catch (error) {
-        throw Boom.boomify(error)
+        throw boom.boomify(error)
     }
 }
 
@@ -65,7 +65,7 @@ async function update(request, reply) {
 
         return res.ok(person, "Successfully update phone number", reply)
     } catch (error) {
-        throw Boom.boomify(error)
+        throw boom.boomify(error)
     }
 }
 
@@ -79,7 +79,7 @@ async function destroy(request, reply) {
 
         return res.ok(phone, "Successfully delete phone number", reply)
     } catch (error) {
-        throw Boom.boomify(error)
+        throw boom.boomify(error)
     }
 }
 

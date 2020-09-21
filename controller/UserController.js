@@ -1,5 +1,5 @@
 const res = require('./ResponseController')
-const Boom = require('@hapi/boom')
+const boom = require('boom')
 
 const userModel = require('./../models/UserModel')
 
@@ -12,7 +12,7 @@ async function get(request, reply) {
 
         return res.ok(users, "", reply)
     } catch (error) {
-        throw Boom.boomify(error)
+        throw boom.boomify(error)
     }
 }
 
@@ -30,7 +30,7 @@ async function store(request, reply) {
 
         return res.ok(users, "Successfully add userssss", reply)
     } catch (error) {
-        throw Boom.boomify(error)
+        throw boom.boomify(error)
     }
 }
 
@@ -45,7 +45,7 @@ async function show(request, reply) {
 
         return res.ok(users, "", reply)
     } catch (error) {
-        throw Boom.boomify(error)
+        throw boom.boomify(error)
     }
 }
 
@@ -65,7 +65,7 @@ async function update(request, reply) {
 
         return res.ok(users, "Successfully update users", reply)
     } catch (error) {
-        throw Boom.boomify(error)
+        throw boom.boomify(error)
     }
 }
 
@@ -79,7 +79,7 @@ async function destroy(request, reply) {
 
         return res.ok(users, "Successfully delete users", reply)
     } catch (error) {
-        throw Boom.boomify(error)
+        throw boom.boomify(error)
     }
 }
 

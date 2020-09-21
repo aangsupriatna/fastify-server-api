@@ -1,6 +1,11 @@
-const Boom = require('@hapi/boom')
+const boom = require('boom')
 const res = require('./ResponseController')
 const userModel = require('./../models/UserModel')
+
+const generates = async (fastify) => {
+    const token = fastify.jwt.sign({ hello: 'world' }, { expiresIn: 86400 });
+    return reply.send({ token })
+};
 
 async function generate(request, reply) {
     try {
@@ -23,10 +28,11 @@ async function generate(request, reply) {
         // const token = fastify.jwt.sign({ user_id, email, password }, { expiresIn: 86400 });
         return res.ok("", userData, reply)
     } catch (error) {
-        throw Boom.boomify(error)
+        throw boom.boomify(error)
     }
 }
 
 module.exports = {
-    generate
+    generate,
+    generates
 };

@@ -1,11 +1,14 @@
 const fastifyPlugin = require('fastify-plugin')
 
 const jwtAuth = fastifyPlugin(async (fastify) => {
-    fastify.decorate('jwtauth', async (req, res) => {
+    fastify.decorate('jwtauth', async (request, reply) => {
         try {
-            await req.jwtVerify()
-        } catch (error) {
-            res.send(error)
+            // to whatever you want, read the token from cookies for example..
+            const token = request.headers.authorization
+            // reply.send(token)
+            await request.jwtVerify()
+        } catch (err) {
+            reply.send(err)
         }
     })
 })
