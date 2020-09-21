@@ -7,8 +7,7 @@
     "license": "MIT",
     "private": true,
     "scripts": {
-        "start": "node server.js",
-        "dev": "nodemon",
+        "start": "nodemon server.js",
         "knex": "knex"
     },
     "dependencies": {
@@ -16,6 +15,7 @@
         "fastify": "^3.4.1",
         "fastify-formbody": "^5.0.0",
         "knex": "^0.21.5",
+        "moment": "^2.28.0",
         "mysql": "^2.18.1",
         "objection": "^2.2.3"
     },

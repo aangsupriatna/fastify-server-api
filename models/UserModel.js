@@ -1,17 +1,16 @@
-require('dotenv').config();
-
 const environment = process.env.NODE_ENV || 'development'
 const config = require('./../knexfile')[environment]
 const knex = require('knex')(config)
-const { Model } = require('objection');
+const moment = require('moment')
 
-const PhoneModel = require('./PhoneModel');
+const { Model } = require('objection')
+const PhoneModel = require('./PhoneModel')
 
-Model.knex(knex);
+Model.knex(knex)
 
 class UserModel extends Model {
     static get tableName() {
-        return 'users';
+        return 'users'
     }
 
     static get relationMappings() {
@@ -26,6 +25,10 @@ class UserModel extends Model {
             }
         };
     }
+
+    $beforeUpdate() {
+        this.updated_at = moment().format()
+    }
 }
 
-module.exports = UserModel;
+module.exports = UserModel

@@ -1,18 +1,18 @@
 const res = require('./ResponseController')
-const userModel = require('./../models/UserModel');
+const userModel = require('./../models/UserModel')
 
 async function get(request, reply) {
     const users = await userModel
         .query()
         .eager('phone')
-        .orderBy('name', 'ASC');
+        .orderBy('name', 'ASC')
 
     return res.ok(users, "", reply)
 }
 
 async function store(request, reply) {
-    let name = request.body.name;
-    let email = request.body.email;
+    let name = request.body.name
+    let email = request.body.email
 
     const users = await userModel
         .query()
@@ -25,20 +25,20 @@ async function store(request, reply) {
 }
 
 async function show(request, reply) {
-    let id = request.params.id;
+    let id = request.params.id
 
     const users = await userModel
         .query()
         .eager('phone')
-        .findById(id);
+        .findById(id)
 
     return res.ok(users, "", reply)
 }
 
 async function update(request, reply) {
-    let name = request.body.name;
-    let email = request.body.email;
-    let id = request.body.id;
+    let name = request.body.name
+    let email = request.body.email
+    let id = request.body.id
 
     const users = await userModel
         .query()
@@ -46,17 +46,17 @@ async function update(request, reply) {
         .patch({
             name: name,
             email: email
-        });
+        })
 
     return res.ok(users, "Successfully update users", reply)
 }
 
 async function destroy(request, reply) {
-    let id = request.params.id;
+    let id = request.params.id
 
     const users = await userModel
         .query()
-        .deleteById(id);
+        .deleteById(id)
 
     return res.ok(users, "Successfully delete users", reply)
 }

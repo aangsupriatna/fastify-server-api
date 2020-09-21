@@ -9,7 +9,6 @@ function ok(values, message, reply) {
         });
 }
 
-
 function notFound(values, message, reply) {
     return reply
         .code(200)

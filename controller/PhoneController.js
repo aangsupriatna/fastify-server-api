@@ -6,7 +6,7 @@ async function get(request, reply) {
         .query()
         .orderBy('user_id', 'ASC');
 
-    return res.ok(phone, "", reply)
+        return res.ok(phone, "", reply)
 }
 
 async function store(request, reply) {
