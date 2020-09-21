@@ -10,9 +10,7 @@ async function routes(fastify, options) {
 
     fastify.get('/routeValidation', {
         preValidation: [fastify.jwtauth]
-    }, async (req, res) => {
-        res.status(200).send({ msg: "Successfully authenticated" });
-    });
+    }, auth.validate);
 
     fastify.get('/users', users.get);
     fastify.get('/users/:id', users.show);
