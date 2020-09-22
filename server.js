@@ -13,6 +13,14 @@ fastify.register(require('./routes'), {
     prefix: '/v1'
 });
 
+// fastify.addHook("onRequest", async (request, reply) => {
+//     try {
+//         await request.jwtVerify()
+//     } catch (err) {
+//         reply.send(err)
+//     }
+// })
+
 const start = async () => {
     try {
         await fastify.listen(process.env.PORT || 3000);

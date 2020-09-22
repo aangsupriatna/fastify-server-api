@@ -1,19 +1,19 @@
-const res = require('./ResponseController')
-const boom = require('boom')
+const res = require('./ResponseController');
+const boom = require('boom');
 const bcrypt = require('bcrypt');
 
-const userModel = require('./../models/UserModel')
+const userModel = require('./../models/UserModel');
 
 async function get(request, reply) {
     try {
         const users = await userModel
             .query()
             .eager('phone')
-            .orderBy('id', 'ASC')
+            .orderBy('id', 'ASC');
 
-        return res.ok(users, "", reply)
+        return res.ok(users, request.user, reply);
     } catch (error) {
-        throw boom.boomify(error)
+        throw boom.boomify(error);
     }
 }
 
@@ -33,24 +33,24 @@ async function store(request, reply) {
                 password: password
             });
 
-        return res.ok(users, "Successfully add users", reply)
+        return res.ok(users, "Successfully add users", reply);
     } catch (error) {
-        throw boom.boomify(error)
+        throw boom.boomify(error);
     }
 }
 
 async function show(request, reply) {
     try {
-        let id = request.params.id
+        let id = request.params.id;
 
         const users = await userModel
             .query()
             .eager('phone')
-            .findById(id)
+            .findById(id);
 
-        return res.ok(users, "", reply)
+        return res.ok(users, "", reply);
     } catch (error) {
-        throw boom.boomify(error)
+        throw boom.boomify(error);
     }
 }
 
@@ -70,25 +70,25 @@ async function update(request, reply) {
                 username: username,
                 email: email,
                 password: password
-            })
+            });
 
-        return res.ok(users, "Successfully update users", reply)
+        return res.ok(users, "Successfully update users", reply);
     } catch (error) {
-        throw boom.boomify(error)
+        throw boom.boomify(error);
     }
 }
 
 async function destroy(request, reply) {
     try {
-        let id = request.params.id
+        let id = request.params.id;
 
         const users = await userModel
             .query()
-            .deleteById(id)
+            .deleteById(id);
 
-        return res.ok(users, "Successfully delete users", reply)
+        return res.ok(users, "Successfully delete users", reply);
     } catch (error) {
-        throw boom.boomify(error)
+        throw boom.boomify(error);
     }
 }
 

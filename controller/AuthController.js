@@ -32,9 +32,13 @@ async function login(request, reply) {
         });
 
     if (user) {
+        const user_id = user.id;
+
         let result = bcrypt.compareSync(request.body.password, user.password)
         if (result) {
-            return res.ok(user, "Success", reply);
+            const token = this.jwt.sign({ user_id }, { expiresIn: 86400 });
+            // return res.ok(user, { token: token }, reply);
+            return reply.send({ token: token, req: request.user })
         } else {
             return res.notFound("", "Password didn't match", reply);
         };

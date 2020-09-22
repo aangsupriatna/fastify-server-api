@@ -11,7 +11,9 @@ async function routes(fastify, options) {
         preValidation: [fastify.jwtauth]
     }, auth.validate);
 
-    fastify.get('/users', users.get);
+    fastify.get('/users', {
+        preValidation: [fastify.jwtauth]
+    }, users.get);
     fastify.get('/users/:id', users.show);
     fastify.post('/users', users.store);
     fastify.put('/users', users.update);
