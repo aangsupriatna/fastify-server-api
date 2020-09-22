@@ -1,5 +1,6 @@
 const res = require('./ResponseController')
 const boom = require('boom')
+const bcrypt = require('bcrypt');
 
 const userModel = require('./../models/UserModel')
 
@@ -8,7 +9,7 @@ async function get(request, reply) {
         const users = await userModel
             .query()
             .eager('phone')
-            .orderBy('name', 'ASC')
+            .orderBy('id', 'ASC')
 
         return res.ok(users, "", reply)
     } catch (error) {
@@ -18,17 +19,21 @@ async function get(request, reply) {
 
 async function store(request, reply) {
     try {
-        let name = request.body.name
-        let email = request.body.email
+        const username = request.body.username;
+        const email = request.body.email;
+
+        const salt = bcrypt.genSaltSync(10)
+        const password = bcrypt.hashSync(request.body.password, salt);
 
         const users = await userModel
             .query()
             .insert({
-                name: name,
-                email: email
+                username: username,
+                email: email,
+                password: password
             });
 
-        return res.ok(users, "Successfully add userssss", reply)
+        return res.ok(users, "Successfully add users", reply)
     } catch (error) {
         throw boom.boomify(error)
     }
@@ -51,16 +56,20 @@ async function show(request, reply) {
 
 async function update(request, reply) {
     try {
-        let name = request.body.name
-        let email = request.body.email
-        let id = request.body.id
+        const username = request.body.username;
+        const email = request.body.email;
+        const id = request.body.id;
+
+        const salt = bcrypt.genSaltSync(10)
+        const password = bcrypt.hashSync(request.body.password, salt);
 
         const users = await userModel
             .query()
             .findById(id)
             .patch({
-                name: name,
-                email: email
+                username: username,
+                email: email,
+                password: password
             })
 
         return res.ok(users, "Successfully update users", reply)
