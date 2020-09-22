@@ -8,6 +8,9 @@ async function routes(fastify, options) {
         return reply.send({ token })
     });
 
+    fastify.post('/register', auth.register);
+    fastify.post('/generateToken', auth.generate);
+
     fastify.get('/routeValidation', {
         preValidation: [fastify.jwtauth]
     }, auth.validate);
