@@ -23,7 +23,7 @@ async function register(request, reply) {
 
 async function login(request, reply) {
     const username = request.body.username;
-    const password = bcrypt.hashSync(request.body.password, salt);
+    const password = request.body.password;
 
     const user = await userModel
         .query()
@@ -33,8 +33,7 @@ async function login(request, reply) {
 
     if (user) {
         const user_id = user.id;
-
-        let result = bcrypt.compareSync(request.body.password, user.password)
+        let result = bcrypt.compareSync(password, user.password)
         if (result) {
             const token = this.jwt.sign({ user_id }, { expiresIn: 86400 });
             // return res.ok(user, { token: token }, reply);

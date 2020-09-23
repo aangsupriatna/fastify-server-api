@@ -3,6 +3,7 @@ let users = require('./controller/UserController');
 let phone = require('./controller/PhoneController');
 
 async function routes(fastify, options) {
+    // Auth
     fastify.post('/register', auth.register);
     fastify.post('/login', auth.login);
     fastify.post('/generateToken', auth.generate);
@@ -11,6 +12,7 @@ async function routes(fastify, options) {
         preValidation: [fastify.jwtauth]
     }, auth.validate);
 
+    // Users
     fastify.get('/users', {
         preValidation: [fastify.jwtauth]
     }, users.get);
