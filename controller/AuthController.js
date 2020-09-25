@@ -5,7 +5,7 @@ const userModel = require('./../models/UserModel');
 
 const salt = bcrypt.genSaltSync(10);
 
-async function register(request, reply) {
+async function postRegister(request, reply) {
     const username = request.body.username;
     const email = request.body.email;
     const password = bcrypt.hashSync(request.body.password, salt);
@@ -19,69 +19,54 @@ async function register(request, reply) {
         });
 
     return res.ok(newuser, "Successfully add user", reply);
-}
+};
 
-async function login(request, reply) {
-    const username = request.body.username;
-    const password = request.body.password;
+async function getLogin(request, reply) {
+    const auth = request.session.authenticated;
+    if (!auth) {
+        return res.notFound(auth, "Auth required", reply);
+    }
 
+    return res.ok(auth, "You are authenticated", reply);
+};
+
+async function postLogin(request, reply) {
     const user = await userModel
         .query()
         .findOne({
-            username: username
+            username: request.body.username
         });
 
     if (user) {
-        const user_id = user.id;
-        let result = bcrypt.compareSync(password, user.password)
+        const result = bcrypt.compareSync(request.body.password, user.password);
         if (result) {
-            const token = this.jwt.sign({ user_id }, { expiresIn: 86400 });
-            // return res.ok(user, { token: token }, reply);
-            return reply.send({ token: token, req: request.user })
+            const auth = request.session.authenticated = true;
+            return res.ok(auth, "User was authenticated", reply);
         } else {
             return res.notFound("", "Password didn't match", reply);
-        };
+        }
     } else {
-        return res.notFound(user, "User not found", reply);
-    };
+        return res.notFound("", "User not found", reply);
+    }
 };
 
-async function validate(request, reply) {
-    try {
-        return res.ok("", "Successfully authenticated", reply);
-    } catch (error) {
-        return boom.boomify(error);
+async function postLogout(request, reply) {
+    const authSession = request.session.authenticated;
+    if (authSession) {
+        request.destroySession(err => {
+            if (err) {
+                return boom.boomify(err);
+            } else {
+                return reply.send({ message: "Remove auth" });
+            }
+        });
     }
-}
-
-async function generate(request, reply) {
-    try {
-        const user_id = request.body.user_id;
-        const email = request.body.email;
-        const password = request.body.password;
-
-        if (!user_id || !email || !password) {
-            return res.notFound("", "Identity is required", reply)
-        }
-
-        const userData = userModel
-            .query()
-            .findById(user_id)
-
-        if (userData && userData.length > 0) {
-
-        }
-
-        const token = this.jwt.sign({ user_id, email, password }, { expiresIn: 86400 });
-        return res.ok(token, "", reply)
-    } catch (error) {
-        throw boom.boomify(error)
-    }
-}
+    return reply.send({ message: "Not auth" });
+};
 
 module.exports = {
-    register,
-    login,
-    generate,
-    validate
+    postRegister,
+    postLogin,
+    getLogin,
+    postLogout
 };

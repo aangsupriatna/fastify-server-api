@@ -3,17 +3,22 @@ const boom = require('boom');
 const bcrypt = require('bcrypt');
 
 const userModel = require('./../models/UserModel');
+const sessionAuth = require('../middleware/auth');
 
 async function get(request, reply) {
-    try {
-        const users = await userModel
-            .query()
-            .eager('phone')
-            .orderBy('id', 'ASC');
+    if (request.session.authenticated) {
+        try {
+            const users = await userModel
+                .query()
+                .eager('phone')
+                .orderBy('id', 'ASC');
 
-        return res.ok(users, request.user, reply);
-    } catch (error) {
-        throw boom.boomify(error);
+            return res.ok(users, request.user, reply);
+        } catch (error) {
+            throw boom.boomify(error);
+        }
+    } else {
+        throw boom.boomify(new Error("Winter is coming"));
     }
 }
 

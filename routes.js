@@ -3,19 +3,19 @@ let users = require('./controller/UserController');
 let phone = require('./controller/PhoneController');
 
 async function routes(fastify, options) {
-    // Auth
-    fastify.post('/register', auth.register);
-    fastify.post('/login', auth.login);
-    fastify.post('/generateToken', auth.generate);
+    // Home
+    fastify.get('/', (request, reply) => {
+        reply.send({ massege: "Welcome, home" });
+    })
 
-    fastify.get('/routeValidation', {
-        preValidation: [fastify.jwtauth]
-    }, auth.validate);
+    // Auth
+    fastify.get('/login', auth.getLogin);
+    fastify.post('/register', auth.postRegister);
+    fastify.post('/login', auth.postLogin);
+    fastify.post('/logout', auth.postLogout);
 
     // Users
-    fastify.get('/users', {
-        preValidation: [fastify.jwtauth]
-    }, users.get);
+    fastify.get('/users', users.get);
     fastify.get('/users/:id', users.show);
     fastify.post('/users', users.store);
     fastify.put('/users', users.update);
@@ -26,6 +26,6 @@ async function routes(fastify, options) {
     fastify.post('/phone', phone.store);
     fastify.put('/phone', phone.update);
     fastify.delete('/phone/:id', phone.destroy);
-}
+};
 
 module.exports = routes;
