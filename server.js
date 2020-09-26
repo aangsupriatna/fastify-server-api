@@ -7,6 +7,7 @@ const fastifyFormBody = require('fastify-formbody');
 const fastifyCookie = require('fastify-cookie');
 const fastifySession = require('fastify-session');
 const fastifyCors = require('fastify-cors');
+const auth = require('./middleware/auth');
 // const fastifyCsrf = require('fastify-csrf');
 
 fastify.register(fastifyFormBody);
@@ -22,7 +23,7 @@ fastify.register(fastifyCors, {
     origin: '*',
 });
 
-// fastify.register(fastifyCsrf, { cookie: true });
+fastify.register(auth);
 
 fastify.register(require('./routes'), {
     prefix: '/v1'
