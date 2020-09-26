@@ -1,9 +1,7 @@
-const res = require('./ResponseController');
-const boom = require('boom');
+const Boom = require('boom');
 const bcrypt = require('bcrypt');
 
 const userModel = require('./../models/UserModel');
-const sessionAuth = require('../middleware/auth');
 
 async function get(request, reply) {
     try {
@@ -12,9 +10,9 @@ async function get(request, reply) {
             .eager('phone')
             .orderBy('id', 'ASC');
 
-        return res.ok(users, request.user, reply);
+        return reply.send(users);
     } catch (error) {
-        throw boom.boomify(error);
+        throw Boom.boomify(error);
     }
 }
 
@@ -26,7 +24,7 @@ async function store(request, reply) {
         const salt = bcrypt.genSaltSync(10)
         const password = bcrypt.hashSync(request.body.password, salt);
 
-        const users = await userModel
+        const user = await userModel
             .query()
             .insert({
                 username: username,
@@ -34,9 +32,9 @@ async function store(request, reply) {
                 password: password
             });
 
-        return res.ok(users, "Successfully add users", reply);
+        return reply.send({ value: user, message: "New user added" });
     } catch (error) {
-        throw boom.boomify(error);
+        throw Boom.boomify(error);
     }
 }
 
@@ -44,14 +42,14 @@ async function show(request, reply) {
     try {
         let id = request.params.id;
 
-        const users = await userModel
+        const user = await userModel
             .query()
             .eager('phone')
             .findById(id);
 
-        return res.ok(users, "", reply);
+        return reply.send(user);
     } catch (error) {
-        throw boom.boomify(error);
+        throw Boom.boomify(error);
     }
 }
 
@@ -64,7 +62,7 @@ async function update(request, reply) {
         const salt = bcrypt.genSaltSync(10)
         const password = bcrypt.hashSync(request.body.password, salt);
 
-        const users = await userModel
+        const user = await userModel
             .query()
             .findById(id)
             .patch({
@@ -73,9 +71,9 @@ async function update(request, reply) {
                 password: password
             });
 
-        return res.ok(users, "Successfully update users", reply);
+        return reply.send({ value: user, message: "User updated" });
     } catch (error) {
-        throw boom.boomify(error);
+        throw Boom.boomify(error);
     }
 }
 
@@ -83,13 +81,13 @@ async function destroy(request, reply) {
     try {
         let id = request.params.id;
 
-        const users = await userModel
+        const user = await userModel
             .query()
             .deleteById(id);
 
-        return res.ok(users, "Successfully delete users", reply);
+        return reply.send({ value: user });
     } catch (error) {
-        throw boom.boomify(error);
+        throw Boom.boomify(error);
     }
 }
 

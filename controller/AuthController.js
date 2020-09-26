@@ -1,14 +1,13 @@
-const boom = require('boom');
-const bcrypt = require('bcrypt');
-const res = require('./ResponseController');
+const Bcrypt = require('bcrypt');
 const userModel = require('./../models/UserModel');
+const Boom = require('boom');
 
-const salt = bcrypt.genSaltSync(10);
+const salt = Bcrypt.genSaltSync(10);
 
 async function postRegister(request, reply) {
     const username = request.body.username;
     const email = request.body.email;
-    const password = bcrypt.hashSync(request.body.password, salt);
+    const password = Bcrypt.hashSync(request.body.password, salt);
 
     const newuser = await userModel
         .query()
@@ -18,16 +17,11 @@ async function postRegister(request, reply) {
             password: password
         });
 
-    return res.ok(newuser, "Successfully add user", reply);
+    return reply.send({ user: newuser, message: "New user added" });
 };
 
 async function getLogin(request, reply) {
-    const auth = request.session.authenticated;
-    if (!auth) {
-        return res.notFound(auth, "Auth required", reply);
-    }
-
-    return res.ok(auth, "You are authenticated", reply);
+    return reply.send({ message: "Congratulation" });
 };
 
 async function postLogin(request, reply) {
@@ -38,15 +32,15 @@ async function postLogin(request, reply) {
         });
 
     if (user) {
-        const result = bcrypt.compareSync(request.body.password, user.password);
+        const result = Bcrypt.compareSync(request.body.password, user.password);
         if (result) {
             const auth = request.session.authenticated = true;
-            return res.ok(auth, "User was authenticated", reply);
+            return reply.send({ value: auth, message: "Authenticated" });
         } else {
-            return res.notFound("", "Password didn't match", reply);
+            throw Boom.notFound("Wrong password");
         }
     } else {
-        return res.notFound("", "User not found", reply);
+        throw Boom.notFound("User not found");
     }
 };
 
@@ -55,13 +49,13 @@ async function postLogout(request, reply) {
     if (authSession) {
         request.destroySession(err => {
             if (err) {
-                return boom.boomify(err);
+                return Boom.boomify(err);
             } else {
-                return reply.send({ message: "Remove auth" });
+                return reply.send({ message: "Auth removed" });
             }
         });
     }
-    return reply.send({ message: "Not auth" });
+    throw Boom.unauthorized("Unauthorized");
 };
 
 module.exports = {

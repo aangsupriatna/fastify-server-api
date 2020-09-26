@@ -1,17 +1,16 @@
-const res = require('./ResponseController')
-const boom = require('boom')
+const Boom = require('boom')
 
 const phoneModel = require('./../models/PhoneModel');
 
 async function get(request, reply) {
     try {
-        const phone = await phoneModel
+        const phones = await phoneModel
             .query()
             .orderBy('user_id', 'ASC');
 
-        return res.ok(phone, "", reply)
+        return reply.send(phones)
     } catch (error) {
-        throw boom.boomify(error)
+        throw Boom.boomify(error)
     }
 }
 
@@ -29,9 +28,9 @@ async function store(request, reply) {
                 description: description
             });
 
-        return res.ok(phone, "Successfully add phone number", reply)
+        return reply.send({ value: phone, message: "New phone added" })
     } catch (error) {
-        throw boom.boomify(error)
+        throw Boom.boomify(error)
     }
 }
 
@@ -43,9 +42,9 @@ async function show(request, reply) {
             .query()
             .where('user_id', '=', user_id);
 
-        return res.ok(phone, "", reply)
+        return reply.send(phone)
     } catch (error) {
-        throw boom.boomify(error)
+        throw Boom.boomify(error)
     }
 }
 
@@ -63,9 +62,9 @@ async function update(request, reply) {
                 description: description
             });
 
-        return res.ok(person, "Successfully update phone number", reply)
+        return reply.send({ value: person, message: "Phone updated" })
     } catch (error) {
-        throw boom.boomify(error)
+        throw Boom.boomify(error)
     }
 }
 
@@ -77,9 +76,9 @@ async function destroy(request, reply) {
             .query()
             .deleteById(id);
 
-        return res.ok(phone, "Successfully delete phone number", reply)
+        return reply.send({ value: phone });
     } catch (error) {
-        throw boom.boomify(error)
+        throw Boom.boomify(error)
     }
 }
 
