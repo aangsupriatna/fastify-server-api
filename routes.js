@@ -4,25 +4,24 @@ let phone = require('./controller/PhoneController');
 
 async function routes(fastify, options) {
     // Home
-    fastify.get('/', {
-        preValidation: [fastify.authenticate]
-    }, (request, reply) => {
-        reply.send({ auth: fastify.sessionAuth, massege: "Welcome, homes" });
+    fastify.get('/', { preValidation: [fastify.authenticate] }, (request, reply) => {
+        reply.send({ auth: fastify.sessionAuth, massege: "Welcome, home" });
     })
 
     // Auth
-    fastify.get('/login', auth.getLogin);
+    fastify.get('/login', { preValidation: [fastify.authenticate] }, auth.getLogin);
     fastify.post('/register', auth.postRegister);
     fastify.post('/login', auth.postLogin);
     fastify.post('/logout', auth.postLogout);
 
     // Users
-    fastify.get('/users', users.get);
-    fastify.get('/users/:id', users.show);
-    fastify.post('/users', users.store);
-    fastify.put('/users', users.update);
-    fastify.delete('/users/:id', users.destroy);
+    fastify.get('/users', { preValidation: [fastify.authenticate] }, users.get);
+    fastify.get('/user/:id', { preValidation: [fastify.authenticate] }, users.show);
+    fastify.post('/users', { preValidation: [fastify.authenticate] }, users.store);
+    fastify.put('/users', { preValidation: [fastify.authenticate] }, users.update);
+    fastify.delete('/user/:id', { preValidation: [fastify.authenticate] }, users.destroy);
 
+    // Phones
     fastify.get('/phone', phone.get);
     fastify.get('/phone/:user_id', phone.show);
     fastify.post('/phone', phone.store);

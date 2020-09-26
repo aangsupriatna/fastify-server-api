@@ -6,9 +6,8 @@ const fastify = require('fastify')({
 const fastifyFormBody = require('fastify-formbody');
 const fastifyCookie = require('fastify-cookie');
 const fastifySession = require('fastify-session');
-const fastifyCors = require('fastify-cors');
+const fastifyHelmet = require('fastify-helmet');
 const auth = require('./middleware/auth');
-// const fastifyCsrf = require('fastify-csrf');
 
 fastify.register(fastifyFormBody);
 fastify.register(fastifyCookie);
@@ -18,25 +17,13 @@ fastify.register(fastifySession, {
     cookie: { secure: false },
     expires: 3600000
 });
+fastify.register(fastifyHelmet);
 
-fastify.register(fastifyCors, {
-    origin: '*',
-});
-
+// Auth middleware
 fastify.register(auth);
 
 fastify.register(require('./routes'), {
     prefix: '/v1'
-});
-
-fastify.addContentTypeParser('application/json', { parseAs: 'string' }, (req, body, done) => {
-    try {
-        const json = JSON.parse(body);
-        done(null, json);
-    } catch (err) {
-        err.statusCode = 400;
-        done(err, undefined);
-    }
 });
 
 const start = async () => {

@@ -6,19 +6,15 @@ const userModel = require('./../models/UserModel');
 const sessionAuth = require('../middleware/auth');
 
 async function get(request, reply) {
-    if (request.session.authenticated) {
-        try {
-            const users = await userModel
-                .query()
-                .eager('phone')
-                .orderBy('id', 'ASC');
+    try {
+        const users = await userModel
+            .query()
+            .eager('phone')
+            .orderBy('id', 'ASC');
 
-            return res.ok(users, request.user, reply);
-        } catch (error) {
-            throw boom.boomify(error);
-        }
-    } else {
-        throw boom.boomify(new Error("Winter is coming"));
+        return res.ok(users, request.user, reply);
+    } catch (error) {
+        throw boom.boomify(error);
     }
 }
 

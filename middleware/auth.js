@@ -1,4 +1,5 @@
-const fp = require("fastify-plugin")
+const fp = require("fastify-plugin");
+const boom = require('boom');
 
 module.exports = fp(async function (fastify, opts, done) {
     fastify.decorate("authenticate", async function (request, reply) {
@@ -7,10 +8,10 @@ module.exports = fp(async function (fastify, opts, done) {
             if (auth) {
                 done();
             } else {
-                throw new Error("Not authorized");
+                throw boom.unauthorized("Unauthorized");
             }
         } catch (err) {
-            reply.send(err);
+            throw boom.boomify(err);
         }
     })
 })
