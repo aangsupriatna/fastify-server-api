@@ -1,12 +1,13 @@
-const environment = process.env.NODE_ENV || 'development'
-const config = require('./../knexfile')[environment]
-const knex = require('knex')(config)
-const moment = require('moment')
+const environment = process.env.NODE_ENV || 'development';
+const config = require('./../knexfile')[environment];
+const knex = require('knex')(config);
+const moment = require('moment');
+const bcrypt = require('bcrypt');
 
-const { Model } = require('objection')
-const PhoneModel = require('./PhoneModel')
+const { Model } = require('objection');
+const PhoneModel = require('./PhoneModel');
 
-Model.knex(knex)
+Model.knex(knex);
 
 class UserModel extends Model {
     static get tableName() {
@@ -24,11 +25,16 @@ class UserModel extends Model {
                 }
             }
         };
-    }
+    };
+
+    $beforeInsert() {
+        this.password = bcrypt.hashSync(this.password, 10);
+    };
 
     $beforeUpdate() {
-        this.updated_at = moment().format()
-    }
-}
+        this.password = bcrypt.hashSync(this.password, 10);
+        this.updated_at = moment().format();
+    };
+};
 
 module.exports = UserModel

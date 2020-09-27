@@ -5,16 +5,12 @@ const Boom = require('boom');
 const salt = Bcrypt.genSaltSync(10);
 
 async function postRegister(request, reply) {
-    const username = request.body.username;
-    const email = request.body.email;
-    const password = Bcrypt.hashSync(request.body.password, salt);
-
     const newuser = await userModel
         .query()
         .insert({
-            username: username,
-            email: email,
-            password: password
+            username: request.body.username,
+            email: request.body.email,
+            password: request.body.password
         });
 
     return reply.send({ user: newuser, message: "New user added" });

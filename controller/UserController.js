@@ -1,6 +1,4 @@
 const Boom = require('boom');
-const bcrypt = require('bcrypt');
-
 const userModel = require('./../models/UserModel');
 
 async function get(request, reply) {
@@ -18,18 +16,12 @@ async function get(request, reply) {
 
 async function store(request, reply) {
     try {
-        const username = request.body.username;
-        const email = request.body.email;
-
-        const salt = bcrypt.genSaltSync(10)
-        const password = bcrypt.hashSync(request.body.password, salt);
-
         const user = await userModel
             .query()
             .insert({
-                username: username,
-                email: email,
-                password: password
+                username: request.body.username,
+                email: request.body.email,
+                password: request.body.password
             });
 
         return reply.send({ value: user, message: "New user added" });
@@ -55,20 +47,15 @@ async function show(request, reply) {
 
 async function update(request, reply) {
     try {
-        const username = request.body.username;
-        const email = request.body.email;
         const id = request.body.id;
-
-        const salt = bcrypt.genSaltSync(10)
-        const password = bcrypt.hashSync(request.body.password, salt);
 
         const user = await userModel
             .query()
             .findById(id)
             .patch({
-                username: username,
-                email: email,
-                password: password
+                username: request.body.username,
+                email: request.body.email,
+                password: request.body.password
             });
 
         return reply.send({ value: user, message: "User updated" });
