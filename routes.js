@@ -1,6 +1,9 @@
-let auth = require('./controller/AuthController');
-let users = require('./controller/UserController');
-let phone = require('./controller/PhoneController');
+const auth = require('./controller/AuthController');
+const users = require('./controller/UserController');
+const phone = require('./controller/PhoneController');
+const util = require('./controller/UtilController');
+
+
 
 async function routes(fastify, options) {
     // Home
@@ -8,6 +11,10 @@ async function routes(fastify, options) {
         const { jti, sub: userId, email } = fastify.jwt.decode(token)
         reply.send({ jti: jti, massege: "Welcome, home" });
     });
+
+    // Upload
+    fastify.post('/upload', util.postUpload);
+    fastify.post('/uploads', util.postUploads);
 
     // Auth
     fastify.get('/login', { preValidation: [fastify.authenticate] }, auth.getLogin);

@@ -7,6 +7,8 @@ const fastifyFormBody = require('fastify-formbody');
 const fastifyCookie = require('fastify-cookie');
 const fastifyJWT = require('fastify-jwt');
 const fastifyHelmet = require('fastify-helmet');
+const fastifyMultipart = require('fastify-multipart');
+// const multer = require('fastify-multer');
 const auth = require('./middleware/auth');
 
 fastify.register(fastifyFormBody);
@@ -19,7 +21,8 @@ fastify.register(fastifyJWT, {
 });
 
 fastify.register(fastifyHelmet);
-
+// fastify.register(multer.contentParser);
+fastify.register(fastifyMultipart);
 // Auth middleware
 fastify.register(auth);
 

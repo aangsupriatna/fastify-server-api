@@ -56,17 +56,7 @@ async function postLogin(request, reply) {
 
 async function postLogout(request, reply) {
     try {
-        const authSession = request.session.authenticated;
-        if (authSession) {
-            request.destroySession(err => {
-                if (err) {
-                    return Boom.boomify(err);
-                } else {
-                    return reply.send({ message: "Auth removed" });
-                }
-            });
-        }
-        throw Boom.unauthorized("Unauthorized");
+        return reply.send({ message: "Not loggin out" });
     } catch (error) {
         throw Boom.boomify(error);
     }
