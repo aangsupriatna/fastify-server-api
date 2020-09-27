@@ -5,7 +5,8 @@ let phone = require('./controller/PhoneController');
 async function routes(fastify, options) {
     // Home
     fastify.get('/', { preValidation: [fastify.authenticate] }, (request, reply) => {
-        reply.send({ user: request.user, massege: "Welcome, home" });
+        const { jti, sub: userId, email } = fastify.jwt.decode(token)
+        reply.send({ jti: jti, massege: "Welcome, home" });
     });
 
     // Auth

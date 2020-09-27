@@ -1,17 +1,19 @@
 const Bcrypt = require('bcrypt');
-const userModel = require('./../models/UserModel');
 const Boom = require('boom');
+const userModel = require('./../models/UserModel');
 
 async function postRegister(request, reply) {
-    const newUser = await userModel
+    await userModel
         .query()
         .insert({
             username: request.body.username,
             email: request.body.email,
             password: request.body.password
-        });
-
-    return reply.send({ message: "New user added", newUser });
+        }).then(function (newUsr) {
+            return reply.send({ message: "New user added", newUsr });
+        }).catch(function (error) {
+            throw Boom.boomify(error)
+        })
 };
 
 async function getLogin(request, reply) {
@@ -19,47 +21,55 @@ async function getLogin(request, reply) {
 };
 
 async function postLogin(request, reply) {
-    const user = await userModel
-        .query()
-        .findOne({
-            username: request.body.username
-        });
-
-    if (user) {
-        const result = Bcrypt.compareSync(request.body.password, user.password);
-        if (result) {
-            const token = await reply.jwtSign({
-                id: user.id,
-                username: user.username
-            }, {
-                expiresIn: 60
+    try {
+        const user = await userModel
+            .query()
+            .findOne({
+                username: request.body.username
             });
-            return reply
-                .setCookie('token', token)
-                .code(200)
-                .send({
-                    message: "Authenticated"
+
+        if (user) {
+            const result = Bcrypt.compareSync(request.body.password, user.password);
+            if (result) {
+                const token = await reply.jwtSign({
+                    id: user.id,
+                    username: user.username
+                }, {
+                    expiresIn: 60 * 5 //in second
                 });
+                return reply
+                    .setCookie('token', token)
+                    .code(200)
+                    .send({
+                        message: "Authenticated"
+                    });
+            } else {
+                throw Boom.notFound("Wrong password");
+            };
         } else {
-            throw Boom.notFound("Wrong password");
-        }
-    } else {
-        throw Boom.notFound("User not found");
-    }
+            throw Boom.notFound("User not found");
+        };
+    } catch (error) {
+        throw Boom.boomify(error);
+    };
 };
 
 async function postLogout(request, reply) {
-    const authSession = request.session.authenticated;
-    if (authSession) {
-        request.destroySession(err => {
-            if (err) {
-                return Boom.boomify(err);
-            } else {
-                return reply.send({ message: "Auth removed" });
-            }
-        });
+    try {
+        const authSession = request.session.authenticated;
+        if (authSession) {
+            request.destroySession(err => {
+                if (err) {
+                    return Boom.boomify(err);
+                } else {
+                    return reply.send({ message: "Auth removed" });
+                }
+            });
+        }
+        throw Boom.unauthorized("Unauthorized");
+    } catch (error) {
+        throw Boom.boomify(error);
     }
-    throw Boom.unauthorized("Unauthorized");
 };
 
 module.exports = {

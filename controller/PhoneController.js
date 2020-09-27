@@ -32,7 +32,7 @@ async function store(request, reply) {
 
 async function show(request, reply) {
     try {
-        let user_id = request.params.user_id;
+        const user_id = request.params.user_id;
 
         const phone = await phoneModel
             .query()
@@ -61,7 +61,7 @@ async function update(request, reply) {
 
 async function destroy(request, reply) {
     try {
-        let id = request.params.id
+        const id = request.params.id
 
         const phone = await phoneModel
             .query()
