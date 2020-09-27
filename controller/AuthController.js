@@ -2,10 +2,8 @@ const Bcrypt = require('bcrypt');
 const userModel = require('./../models/UserModel');
 const Boom = require('boom');
 
-const salt = Bcrypt.genSaltSync(10);
-
 async function postRegister(request, reply) {
-    const newuser = await userModel
+    const newUser = await userModel
         .query()
         .insert({
             username: request.body.username,
@@ -13,11 +11,11 @@ async function postRegister(request, reply) {
             password: request.body.password
         });
 
-    return reply.send({ user: newuser, message: "New user added" });
+    return reply.send({ message: "New user added", newUser });
 };
 
 async function getLogin(request, reply) {
-    return reply.send({ message: "Congratulation" });
+    return reply.send({ message: `Hi ${request.user.username}, You are authorized` });
 };
 
 async function postLogin(request, reply) {
@@ -30,8 +28,18 @@ async function postLogin(request, reply) {
     if (user) {
         const result = Bcrypt.compareSync(request.body.password, user.password);
         if (result) {
-            const auth = request.session.authenticated = true;
-            return reply.send({ value: auth, message: "Authenticated" });
+            const token = await reply.jwtSign({
+                id: user.id,
+                username: user.username
+            }, {
+                expiresIn: 60
+            });
+            return reply
+                .setCookie('token', token)
+                .code(200)
+                .send({
+                    message: "Authenticated"
+                });
         } else {
             throw Boom.notFound("Wrong password");
         }

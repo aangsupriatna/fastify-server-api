@@ -29,6 +29,7 @@ class UserModel extends Model {
 
     $beforeInsert() {
         this.password = bcrypt.hashSync(this.password, 10);
+        this.role = 'member';
     };
 
     $beforeUpdate() {

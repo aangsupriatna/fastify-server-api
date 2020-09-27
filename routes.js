@@ -5,8 +5,8 @@ let phone = require('./controller/PhoneController');
 async function routes(fastify, options) {
     // Home
     fastify.get('/', { preValidation: [fastify.authenticate] }, (request, reply) => {
-        reply.send({ auth: fastify.sessionAuth, massege: "Welcome, home" });
-    })
+        reply.send({ user: request.user, massege: "Welcome, home" });
+    });
 
     // Auth
     fastify.get('/login', { preValidation: [fastify.authenticate] }, auth.getLogin);

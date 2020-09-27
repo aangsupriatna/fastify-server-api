@@ -5,18 +5,19 @@ const fastify = require('fastify')({
 });
 const fastifyFormBody = require('fastify-formbody');
 const fastifyCookie = require('fastify-cookie');
-const fastifySession = require('fastify-session');
+const fastifyJWT = require('fastify-jwt');
 const fastifyHelmet = require('fastify-helmet');
 const auth = require('./middleware/auth');
 
 fastify.register(fastifyFormBody);
 fastify.register(fastifyCookie);
-fastify.register(fastifySession, {
-    cookieName: 'sessionId',
-    secret: process.env.SESSION_KEY,
-    cookie: { secure: false },
-    expires: 3600000
+fastify.register(fastifyJWT, {
+    secret: process.env.JWT_SECRET,
+    cookie: {
+        cookieName: 'token'
+    }
 });
+
 fastify.register(fastifyHelmet);
 
 // Auth middleware

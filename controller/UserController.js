@@ -11,24 +11,20 @@ async function get(request, reply) {
         return reply.send(users);
     } catch (error) {
         throw Boom.boomify(error);
-    }
-}
+    };
+};
 
 async function store(request, reply) {
     try {
         const user = await userModel
             .query()
-            .insert({
-                username: request.body.username,
-                email: request.body.email,
-                password: request.body.password
-            });
+            .insert(request.body);
 
-        return reply.send({ value: user, message: "New user added" });
+        return reply.send({ message: "New user added", user });
     } catch (error) {
         throw Boom.boomify(error);
-    }
-}
+    };
+};
 
 async function show(request, reply) {
     try {
@@ -42,27 +38,23 @@ async function show(request, reply) {
         return reply.send(user);
     } catch (error) {
         throw Boom.boomify(error);
-    }
-}
+    };
+};
 
 async function update(request, reply) {
     try {
-        const id = request.body.id;
+        const id = request.params.id;
 
         const user = await userModel
             .query()
             .findById(id)
-            .patch({
-                username: request.body.username,
-                email: request.body.email,
-                password: request.body.password
-            });
+            .patch(request.body);
 
-        return reply.send({ value: user, message: "User updated" });
+        return reply.send({ message: "User updated", user });
     } catch (error) {
         throw Boom.boomify(error);
-    }
-}
+    };
+};
 
 async function destroy(request, reply) {
     try {
@@ -75,8 +67,8 @@ async function destroy(request, reply) {
         return reply.send({ value: user });
     } catch (error) {
         throw Boom.boomify(error);
-    }
-}
+    };
+};
 
 module.exports = {
     get,

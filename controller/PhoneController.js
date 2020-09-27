@@ -8,31 +8,27 @@ async function get(request, reply) {
             .query()
             .orderBy('user_id', 'ASC');
 
-        return reply.send(phones)
+        return reply.send(phones);
     } catch (error) {
-        throw Boom.boomify(error)
-    }
-}
+        throw Boom.boomify(error);
+    };
+};
 
 async function store(request, reply) {
     try {
-        let userId = request.body.user_id;
-        let phoneNum = request.body.phone;
-        let description = request.body.description;
-
         const phone = await phoneModel
             .query()
             .insert({
-                user_id: userId,
-                phone_number: phoneNum,
-                description: description
+                user_id: request.body.user_id,
+                phone_number: request.body.phone,
+                description: request.body.description
             });
 
-        return reply.send({ value: phone, message: "New phone added" })
+        return reply.send({ message: "New phone added", phone });
     } catch (error) {
-        throw Boom.boomify(error)
-    }
-}
+        throw Boom.boomify(error);
+    };
+};
 
 async function show(request, reply) {
     try {
@@ -42,31 +38,26 @@ async function show(request, reply) {
             .query()
             .where('user_id', '=', user_id);
 
-        return reply.send(phone)
+        return reply.send(phone);
     } catch (error) {
         throw Boom.boomify(error)
-    }
-}
+    };
+};
 
 async function update(request, reply) {
     try {
-        let phoneNum = request.body.phone;
-        let id = request.body.id;
-        let description = request.body.description;
+        const id = request.params.id;
 
         const person = await phoneModel
             .query()
             .findById(id)
-            .patch({
-                phone_number: phoneNum,
-                description: description
-            });
+            .patch(request.body);
 
-        return reply.send({ value: person, message: "Phone updated" })
+        return reply.send({ message: "Phone updated", person })
     } catch (error) {
         throw Boom.boomify(error)
-    }
-}
+    };
+};
 
 async function destroy(request, reply) {
     try {
@@ -79,8 +70,8 @@ async function destroy(request, reply) {
         return reply.send({ value: phone });
     } catch (error) {
         throw Boom.boomify(error)
-    }
-}
+    };
+};
 
 module.exports = {
     get,
