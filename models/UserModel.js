@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 
 const { Model } = require('objection');
 const PhoneModel = require('./PhoneModel');
+const AssetModel = require('./AssetModel');
 
 Model.knex(knex);
 
@@ -20,6 +21,14 @@ class UserModel extends Model {
                 join: {
                     from: 'users.id',
                     to: 'phone.user_id'
+                }
+            },
+            asset: {
+                relation: Model.HasManyRelation,
+                modelClass: AssetModel,
+                join: {
+                    from: 'users.id',
+                    to: 'assets.user_id'
                 }
             }
         };

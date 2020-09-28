@@ -6,12 +6,11 @@ const util = require('../controller/UtilController');
 async function routes(fastify, options) {
     // Home
     fastify.get('/', { preValidation: [fastify.authenticate] }, (request, reply) => {
-        const { jti, sub: userId, email } = fastify.jwt.decode(token)
-        reply.send({ jti: jti, massege: "Welcome, home" });
+        reply.send({ user: request.user, massege: "Welcome, home" });
     });
 
     // Upload
-    fastify.post('/upload', util.postUpload);
+    fastify.post('/upload', { preValidation: [fastify.authenticate] }, util.postUpload);
     fastify.post('/uploads', util.postUploads);
     fastify.delete('/upload/delete/:id', util.deleteUpload);
     fastify.post('/uploads/delete', util.deleteUploads);

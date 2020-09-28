@@ -8,8 +8,8 @@ const fastifyCookie = require('fastify-cookie');
 const fastifyJWT = require('fastify-jwt');
 const fastifyHelmet = require('fastify-helmet');
 const fastifyMultipart = require('fastify-multipart');
-// const multer = require('fastify-multer');
 const auth = require('./middleware/auth');
+const util = require('./config/util');
 
 fastify.register(fastifyFormBody);
 fastify.register(fastifyCookie);
@@ -25,6 +25,8 @@ fastify.register(fastifyHelmet);
 fastify.register(fastifyMultipart);
 // Auth middleware
 fastify.register(auth);
+// custom plugins
+fastify.register(util);
 
 fastify.register(require('./config/routes'), {
     prefix: '/v1'
