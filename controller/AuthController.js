@@ -3,6 +3,7 @@ const Boom = require('boom');
 const userModel = require('./../models/UserModel');
 
 async function postRegister(request, reply) {
+    if (request.body.password != request.body.password2) throw new Error("Password not match");
     await userModel
         .query()
         .insert({

@@ -1,12 +1,9 @@
-const environment = process.env.NODE_ENV || 'development'
-const config = require('./../knexfile')[environment]
-const knex = require('knex')(config)
+const knex = require('../db');
 const moment = require('moment')
-
 const { Model } = require('objection')
-const UserModel = require('./UserModel')
-
 Model.knex(knex)
+
+const UserModel = require('./UserModel')
 
 class PhoneModel extends Model {
 
