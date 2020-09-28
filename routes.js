@@ -15,7 +15,8 @@ async function routes(fastify, options) {
     // Upload
     fastify.post('/upload', util.postUpload);
     fastify.post('/uploads', util.postUploads);
-    fastify.delete('/upload/:file', util.deleteUpload);
+    fastify.delete('/upload/delete/:file', util.deleteUpload);
+    fastify.post('/uploads/delete', util.deleteUploads);
 
     // Auth
     fastify.get('/login', { preValidation: [fastify.authenticate] }, auth.getLogin);

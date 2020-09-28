@@ -33,9 +33,23 @@ async function deleteUpload(request, reply) {
     try {
         const file = request.params.file;
         const fileToDelete = path.join(uploadPath, file);
-        const deleteFile = await fs.unlinkSync(fileToDelete);
+        await fs.unlinkSync(fileToDelete);
 
-        return reply.code(200).send({ message: "Delete success", result: deleteFile });
+        return reply.code(200).send({ message: "Delete success" });
+    } catch (error) {
+        throw new Error("Delete error");
+    }
+};
+
+async function deleteUploads(request, reply) {
+    try {
+        const files = request.body.file;
+        for await (const file of files) {
+            const fileToDelete = path.join(uploadPath, file);
+            await fs.unlinkSync(fileToDelete);
+        }
+
+        return reply.code(200).send({ message: "Delete success" });
     } catch (error) {
         throw new Error("Delete error");
     }
@@ -44,5 +58,6 @@ async function deleteUpload(request, reply) {
 module.exports = {
     postUpload,
     postUploads,
-    deleteUpload
+    deleteUpload,
+    deleteUploads
 };
