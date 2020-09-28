@@ -26,7 +26,7 @@ fastify.register(fastifyMultipart);
 // Auth middleware
 fastify.register(auth);
 
-fastify.register(require('./routes'), {
+fastify.register(require('./config/routes'), {
     prefix: '/v1'
 });
 

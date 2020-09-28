@@ -1,9 +1,7 @@
-const auth = require('./controller/AuthController');
-const users = require('./controller/UserController');
-const phone = require('./controller/PhoneController');
-const util = require('./controller/UtilController');
-
-
+const auth = require('../controller/AuthController');
+const users = require('../controller/UserController');
+const phone = require('../controller/PhoneController');
+const util = require('../controller/UtilController');
 
 async function routes(fastify, options) {
     // Home
@@ -15,7 +13,7 @@ async function routes(fastify, options) {
     // Upload
     fastify.post('/upload', util.postUpload);
     fastify.post('/uploads', util.postUploads);
-    fastify.delete('/upload/delete/:file', util.deleteUpload);
+    fastify.delete('/upload/delete/:id', util.deleteUpload);
     fastify.post('/uploads/delete', util.deleteUploads);
 
     // Auth
