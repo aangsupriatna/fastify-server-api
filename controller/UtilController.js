@@ -61,6 +61,15 @@ async function postUploads(request, reply) {
     }
 };
 
+async function getDownload(request, reply) {
+    try {
+        const filename = request.params.filename
+        reply.sendFile(filename);
+    } catch (error) {
+        throw new Error();
+    }
+};
+
 async function deleteUpload(request, reply) {
     try {
         const id = request.params.id;
@@ -105,6 +114,7 @@ async function deleteUploads(request, reply) {
 module.exports = {
     postUpload,
     postUploads,
+    getDownload,
     deleteUpload,
     deleteUploads
 };
